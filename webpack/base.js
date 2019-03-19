@@ -31,8 +31,12 @@ module.exports = {
       root: path.resolve(__dirname, '../'),
     }),
     new webpack.DefinePlugin({
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true),
+      'typeof WEBGL_RENDERER': JSON.stringify(true),
+      'typeof CANVAS_RENDERER': JSON.stringify(true),
+      'typeof EXPERIMENTAL': JSON.stringify(true),
+      'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
+      'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
+      'process.env.APP_ENV': JSON.stringify(process.env.APP_ENV || ''),
     }),
     new HtmlWebpackPlugin({
       template: './index.html',
