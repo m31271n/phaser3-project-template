@@ -2,9 +2,12 @@ import Phaser from 'phaser'
 import BootGame from './scenes/BootGame'
 import PlayGame from './scenes/PlayGame'
 import env from './util/env'
+import dc from './util/device-compatibility'
 
 // remove useless reference of Phaser
 delete window.Phaser
+
+dc.disableScroll()
 
 const config = {
   backgroundColor: 0xecf0f1,
