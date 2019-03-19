@@ -5,12 +5,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
-  entry: './src/index.js',
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   devServer: {
     host: '0.0.0.0',
     useLocalIp: true,
+  },
+  entry: './src/index.js',
+  resolve: {
+    alias: {
+      assets: path.resolve(__dirname, '../assets'),
+    },
   },
   module: {
     rules: [

@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import _logo from '../assets/logo.png'
+import _logo from 'assets/logo.png'
 
 class PlayGame extends Phaser.Scene {
   constructor() {
