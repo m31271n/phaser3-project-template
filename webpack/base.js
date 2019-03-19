@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
+  entry: './src/index.js',
   mode: 'development',
   devtool: 'eval-source-map',
   module: {
@@ -30,6 +31,9 @@ module.exports = {
     new CleanWebpackPlugin(['dist'], {
       root: path.resolve(__dirname, '../'),
     }),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
     new webpack.DefinePlugin({
       'typeof WEBGL_RENDERER': JSON.stringify(true),
       'typeof CANVAS_RENDERER': JSON.stringify(true),
@@ -37,9 +41,6 @@ module.exports = {
       'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
       'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
       'process.env.APP_ENV': JSON.stringify(process.env.APP_ENV || ''),
-    }),
-    new HtmlWebpackPlugin({
-      template: './index.html',
     }),
   ],
 }
