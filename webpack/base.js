@@ -8,6 +8,10 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
+  devServer: {
+    host: '0.0.0.0',
+    useLocalIp: true,
+  },
   module: {
     rules: [
       {
