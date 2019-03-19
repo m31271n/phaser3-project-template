@@ -1,8 +1,15 @@
 import Phaser from 'phaser'
+import _rect from 'assets/rect.png'
+import _logo from 'assets/logo.png'
 
 class BootGame extends Phaser.Scene {
   constructor() {
     super('BootGame')
+  }
+
+  preload() {
+    this.load.image('rect', _rect)
+    this.load.image('logo', _logo)
   }
 
   create() {
@@ -14,15 +21,15 @@ class BootGame extends Phaser.Scene {
       .text(centerX, centerY, 'Loading Game...', { color: '#000' })
       .setOrigin(0.5)
 
-    // emulate elapsed time which is consumed by loader
-    this.time.addEvent({
-      delay: 2000,
+    this.delay = this.time.addEvent({
+      delay: 500,
       callbackScope: this,
       callback: this.nextScene,
     })
   }
 
   nextScene() {
+    this.delay.remove()
     this.scene.start('PlayGame')
   }
 }

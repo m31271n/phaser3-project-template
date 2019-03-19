@@ -18,8 +18,8 @@ const config = {
     parent: 'game-container',
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 800,
-    height: 600,
+    width: 750,
+    height: 1500,
   },
   scene: [BootGame, PlayGame],
 }
