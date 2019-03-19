@@ -30,32 +30,32 @@ class PlayGame extends Phaser.Scene {
   setWidgetPosition({ top, bottom, left, right }) {
     // $ indicates that the unit is CSS pixel.
     const {
-      left: $left,
-      top: $top,
-      bottom: $bottom,
-      right: $right,
+      x: $left,
+      y: $top,
       width: $width,
       height: $height,
-    } = this.game.canvas.getBoundingClientRect()
+    } = this.game.scale.canvasBounds
+
     const { innerWidth: $viewportWidth, innerHeight: $viewportHeight } = window
 
     // No $ indicates that the unit is physical pixel.
     const { width, height } = this.game.config
 
     // this scale is required when converting CSS size into canvas size.
-    const scaleRatio = width / $width
+    const { x: scaleX, y: scaleY } = this.game.scale.displayScale
 
-    const adjustedLeft = $left >= 0 ? 0 : -$left
-    const adjustedTop = $top >= 0 ? 0 : -$top
-    const adjustedWidth = $width > $viewportWidth ? $viewportWidth : $width
-    const adjustedHeight = $height > $viewportHeight ? $viewportHeight : $height
-    const adjustedRight = adjustedLeft + adjustedWidth
-    const adjustedBottom = adjustedTop + adjustedHeight
+    // adjust $left, $top, $right, $bottom according the scale mode
+    const $properLeft = $left >= 0 ? 0 : -$left
+    const $properTop = $top >= 0 ? 0 : -$top
+    const $properWidth = $width > $viewportWidth ? $viewportWidth : $width
+    const $properHeight = $height > $viewportHeight ? $viewportHeight : $height
+    const $properRight = $properLeft + $properWidth
+    const $properBottom = $properTop + $properHeight
 
-    const boundLeft = adjustedLeft * scaleRatio
-    const boundTop = adjustedTop * scaleRatio
-    const boundRight = adjustedRight * scaleRatio
-    const boundBottom = adjustedBottom * scaleRatio
+    const boundLeft = $properLeft * scaleX
+    const boundTop = $properTop * scaleY
+    const boundRight = $properRight * scaleX
+    const boundBottom = $properBottom * scaleY
 
     let x
     let y
