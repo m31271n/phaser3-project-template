@@ -14,6 +14,15 @@ class BootGame extends Phaser.Scene {
       .text(centerX, centerY, 'Loading Game...', { color: '#000' })
       .setOrigin(0.5)
 
+    // emulate elapsed time which is consumed by loader
+    this.time.addEvent({
+      delay: 2000,
+      callbackScope: this,
+      callback: this.nextScene,
+    })
+  }
+
+  nextScene() {
     this.scene.start('PlayGame')
   }
 }
