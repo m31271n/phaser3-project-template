@@ -1,32 +1,22 @@
-import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+import Phaser from 'phaser'
+import BootGame from './scenes/BootGame'
+import PlayGame from './scenes/PlayGame'
 
 const config = {
+  backgroundColor: 0xecf0f1,
+  autoFocus: true,
   type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
-};
-
-const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image("logo", logoImg);
+  scale: {
+    parent: 'game-container',
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 800,
+    height: 600,
+  },
+  scene: [BootGame, PlayGame],
 }
 
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
+window.onload = function() {
+  const game = new Phaser.Game(config)
+  window.game = game
 }
