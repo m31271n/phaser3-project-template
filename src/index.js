@@ -14,13 +14,12 @@ const config = {
   banner: !env.isProduction(),
   autoFocus: true,
   type: Phaser.AUTO,
-  scale: {
-    parent: 'game-container',
-    mode: Phaser.Scale.ENVELOP,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: 750,
-    height: 1500,
-  },
+  parent: 'game-container',
+  scaleMode: Phaser.Scale.ENVELOP,
+  forceOrientation: true,
+  autoCenter: Phaser.Scale.CENTER_BOTH,
+  width: 1500,
+  height: 750,
   scene: [BootGame, PlayGame],
 }
 

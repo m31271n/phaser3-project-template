@@ -20,23 +20,71 @@ class PlayGame extends Phaser.Scene {
       loop: -1,
     })
 
-    this.rect = this.add.image(0, 0, 'rect').setTint(0x00ff00)
+    this.topLeft = this.add
+      .image(0, 0, 'rect')
+      .setTint(0x00ff00)
+      .setInteractive()
+      .on('pointerup', () => {
+        console.log('TOP LEFT')
+      })
+
+    this.topRight = this.add
+      .image(0, 0, 'rect')
+      .setTint(0x00ff00)
+      .setInteractive()
+      .on('pointerup', () => {
+        console.log('TOP RIGHT')
+      })
+
+    this.bottomLeft = this.add
+      .image(0, 0, 'rect')
+      .setTint(0x00ff00)
+      .setInteractive()
+      .on('pointerup', () => {
+        console.log('BOTTOM LEFT')
+      })
+
+    this.bottomRight = this.add
+      .image(0, 0, 'rect')
+      .setTint(0x00ff00)
+      .setInteractive()
+      .on('pointerup', () => {
+        console.log('BOTTOM RIGHT')
+      })
   }
 
   update() {
-    this.setWidgetPosition({ left: 50, bottom: 50 })
+    const { topLeft, topRight, bottomLeft, bottomRight, } = this
+
+    this.setWidgetPosition({ target: topLeft, top: 50, left: 50 })
+    this.setWidgetPosition({ target: topRight, top: 50, right: 50 })
+    this.setWidgetPosition({ target: bottomLeft, bottom: 50, left: 50 })
+    this.setWidgetPosition({ target: bottomRight, bottom: 50, right: 50 })
   }
 
-  setWidgetPosition({ top, bottom, left, right }) {
+  setWidgetPosition({ target, top, bottom, left, right }) {
     // $ indicates that the unit is CSS pixel.
-    const {
-      x: $left,
-      y: $top,
-      width: $width,
-      height: $height,
-    } = this.game.scale.canvasBounds
+    const bounds = this.game.scale.canvasBounds
 
-    const { innerWidth: $viewportWidth, innerHeight: $viewportHeight } = window
+    const $width = this.game.scale.displaySize.width
+    const $height = this.game.scale.displaySize.height
+
+    let $x
+    let $y
+    let $viewportWidth
+    let $viewportHeight
+
+    if (this.game.scale.shouldRotate) {
+      $x = bounds.y
+      $y = bounds.x
+      $viewportWidth = window.innerHeight
+      $viewportHeight = window.innerWidth
+    } else {
+      $x = bounds.x
+      $y = bounds.y
+      $viewportWidth = window.innerWidth
+      $viewportHeight = window.innerHeight
+    }
 
     // No $ indicates that the unit is physical pixel.
     const { width, height } = this.game.config
@@ -45,8 +93,9 @@ class PlayGame extends Phaser.Scene {
     const { x: scaleX, y: scaleY } = this.game.scale.displayScale
 
     // adjust $left, $top, $right, $bottom according the scale mode
-    const $properLeft = $left >= 0 ? 0 : -$left
-    const $properTop = $top >= 0 ? 0 : -$top
+    const $properLeft = $x >= 0 ? 0 : -$x
+    const $properTop = $y >= 0 ? 0 : -$y
+
     const $properWidth = $width > $viewportWidth ? $viewportWidth : $width
     const $properHeight = $height > $viewportHeight ? $viewportHeight : $height
     const $properRight = $properLeft + $properWidth
@@ -65,7 +114,7 @@ class PlayGame extends Phaser.Scene {
     if (right !== undefined) x = boundRight - right
     if (bottom !== undefined) y = boundBottom - bottom
 
-    this.rect.setPosition(x, y)
+    target.setPosition(x, y)
   }
 }
 
