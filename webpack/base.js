@@ -34,6 +34,13 @@ module.exports = {
         test: /\.(gif|png|jpe?g|svg|xml|mp3|mp4|ogg|fnt)$/i,
         use: 'file-loader',
       },
+      {
+        // fix error when loading JSON files in webpack 4
+        // https://github.com/webpack-contrib/file-loader/issues/264
+        test: /\.json$/,
+        type: 'javascript/auto',
+        use: 'file-loader',
+      },
     ],
   },
   plugins: [
