@@ -15,11 +15,11 @@ const config = {
   autoFocus: true,
   type: Phaser.AUTO,
   parent: 'game-container',
-  scaleMode: Phaser.Scale.ENVELOP,
+  scaleMode: Phaser.Scale.FIT,
   forceOrientation: true,
   autoCenter: Phaser.Scale.CENTER_BOTH,
-  width: 1500,
-  height: 750,
+  width: 750,
+  height: 1500,
   scene: [BootGame, PlayGame],
 }
 
