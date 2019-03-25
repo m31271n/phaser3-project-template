@@ -18,8 +18,8 @@ const config = {
   scaleMode: Phaser.Scale.FIT,
   forceOrientation: true,
   autoCenter: Phaser.Scale.CENTER_BOTH,
-  width: 750,
-  height: 1500,
+  width: 1080,
+  height: 1750,
   scene: [BootGame, PlayGame],
 }
 
