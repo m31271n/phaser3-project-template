@@ -1,7 +1,12 @@
 import Phaser from 'phaser'
 
-const TREE_TRUNK_HEIGHT = 243 // the height of trunk1 / trunk2 image
 const TREE_ROOT_POSITION = 1450
+const TREE_TRUNK_HEIGHT = 243 // the height of trunk1 / trunk2 image
+const TREE_TRUNK_VELOCITY_X = 800
+const TREE_TRUNK_VELOCITY_Y = 600
+const TREE_TRUNK_GRAVITY = 2000
+const TREE_TRUNK_ROTATE_ANGLE = 250
+
 const PLAYER_POSITION_LEFT = 'left'
 const PLAYER_POSITION_RIGHT = 'right'
 const PLAYER_POSITION_Y = 1520
@@ -31,6 +36,15 @@ class PlayGame extends Phaser.Scene {
     this.enableControl()
 
     this.addCorners()
+  }
+
+  update() {
+    const { topLeft, topRight, bottomLeft, bottomRight } = this
+
+    this.setWidgetPosition({ target: topLeft, top: 50, left: 50 })
+    this.setWidgetPosition({ target: topRight, top: 50, right: 50 })
+    this.setWidgetPosition({ target: bottomLeft, bottom: 50, left: 50 })
+    this.setWidgetPosition({ target: bottomRight, bottom: 50, right: 50 })
   }
 
   addBG() {
@@ -104,6 +118,48 @@ class PlayGame extends Phaser.Scene {
     this.playerPosition = PLAYER_POSITION_LEFT
   }
 
+  enableControl() {
+    const { SPACE, LEFT, RIGHT } = Phaser.Input.Keyboard.KeyCodes
+
+    const keySpace = this.input.keyboard.addKey(SPACE)
+    const keyLeft = this.input.keyboard.addKey(LEFT)
+    const keyRight = this.input.keyboard.addKey(RIGHT)
+
+    keySpace.on('down', () => {})
+    keyLeft.on('down', () => {
+      this.cutLeft()
+    })
+    keyRight.on('down', () => {
+      this.cutRight()
+    })
+
+    this.input.on('pointerdown', ({ x }) => {
+      if (x <= this.gameWidth / 2) {
+        this.cutLeft()
+      } else {
+        this.cutRight()
+      }
+    })
+  }
+
+  cutLeft() {
+    this.movePlayerToLeft()
+    this.checkDeath()
+
+    this.addBlock()
+    this.removeBlock()
+    this.checkDeath()
+  }
+
+  cutRight() {
+    this.movePlayerToRight()
+    this.checkDeath()
+
+    this.addBlock()
+    this.removeBlock()
+    this.checkDeath()
+  }
+
   movePlayerToLeft() {
     const x = this.player.width / 2
     const y = PLAYER_POSITION_Y
@@ -120,26 +176,6 @@ class PlayGame extends Phaser.Scene {
 
     this.player.play('cut')
     this.playerPosition = PLAYER_POSITION_RIGHT
-  }
-
-  enableControl() {
-    const { SPACE, LEFT, RIGHT } = Phaser.Input.Keyboard.KeyCodes
-
-    const keySpace = this.input.keyboard.addKey(SPACE)
-    const keyLeft = this.input.keyboard.addKey(LEFT)
-    const keyRight = this.input.keyboard.addKey(RIGHT)
-
-    keySpace.on('down', () => console.log('SPACE'))
-    keyLeft.on('down', () => this.movePlayerToLeft())
-    keyRight.on('down', () => this.movePlayerToRight())
-
-    this.input.on('pointerdown', ({ x }) => {
-      if (x <= this.gameWidth / 2) {
-        this.movePlayerToLeft()
-      } else {
-        this.movePlayerToRight()
-      }
-    })
   }
 
   get randomTrunkKey() {
@@ -192,31 +228,65 @@ class PlayGame extends Phaser.Scene {
     this.tree.add(trunk)
   }
 
-  update() {
-    const { topLeft, topRight, bottomLeft, bottomRight } = this
+  removeBlock() {
+    const block = this.tree.getFirst(true)
+    this.tree.remove(block)
 
-    this.setWidgetPosition({ target: topLeft, top: 50, left: 50 })
-    this.setWidgetPosition({ target: topRight, top: 50, right: 50 })
-    this.setWidgetPosition({ target: bottomLeft, bottom: 50, left: 50 })
-    this.setWidgetPosition({ target: bottomRight, bottom: 50, right: 50 })
+    this.physics.add.existing(block)
+
+    block.setOrigin(0.5)
+    block.y -= block.height / 2
+
+    block.body.setVelocityY(-TREE_TRUNK_VELOCITY_Y)
+    block.body.setGravityY(TREE_TRUNK_GRAVITY)
+
+    let angle = 0
+
+    switch (this.playerPosition) {
+      case PLAYER_POSITION_LEFT:
+        block.body.setVelocityX(TREE_TRUNK_VELOCITY_X)
+        angle = -TREE_TRUNK_ROTATE_ANGLE
+        break
+
+      case PLAYER_POSITION_RIGHT:
+        block.body.setVelocityX(-TREE_TRUNK_VELOCITY_X)
+        angle = TREE_TRUNK_ROTATE_ANGLE
+        break
+
+      default:
+    }
+
+    this.tweens.add({
+      targets: block,
+      angle,
+      duration: 800,
+      ease: 'Power2',
+    })
+
+    const blocks = this.tree.getChildren()
+
+    blocks.forEach(block => {
+      this.tweens.add({
+        targets: block,
+        y: block.y + TREE_TRUNK_HEIGHT,
+        duration: 100,
+      })
+    })
+  }
+
+  checkDeath() {
+    const currentBlock = this.tree.getFirst(true)
+    const { key } = currentBlock.texture
+
+    if (
+      (key === 'branchLeft' && this.playerPosition === PLAYER_POSITION_LEFT) ||
+      (key === 'branchRight' && this.playerPosition === PLAYER_POSITION_RIGHT)
+    ) {
+      console.log('death')
+    }
   }
 
   addCorners() {
-    const { width, height } = this.game.config
-
-    const x = width / 2
-    const y = height / 2
-    const logo = this.add.image(x, y, 'logo')
-
-    this.tweens.add({
-      targets: logo,
-      y: y - 100,
-      duration: 1000,
-      ease: 'Power2',
-      yoyo: true,
-      loop: -1,
-    })
-
     this.topLeft = this.add
       .image(0, 0, 'rect')
       .setTint(0x00ff00)

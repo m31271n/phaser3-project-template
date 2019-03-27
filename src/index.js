@@ -21,6 +21,9 @@ const config = {
   width: 1080,
   height: 1750,
   scene: [BootGame, PlayGame],
+  physics: {
+    default: 'arcade',
+  },
 }
 
 window.onload = function() {
