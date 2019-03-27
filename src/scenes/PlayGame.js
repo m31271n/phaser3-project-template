@@ -19,15 +19,10 @@ class PlayGame extends Phaser.Scene {
     this.branches = ['branchLeft', 'branchRight']
   }
 
-  setup() {
-    this.gameWidth = this.game.config.width
-    this.gameHeight = this.game.config.height
-    this.gameCenterX = this.gameWidth / 2
-    this.gameCenterY = this.gameHeight / 2
-  }
-
   create() {
     this.setup()
+
+    this.soundTheme.play()
 
     this.addBG()
     this.addTree()
@@ -45,6 +40,17 @@ class PlayGame extends Phaser.Scene {
     this.setWidgetPosition({ target: topRight, top: 50, right: 50 })
     this.setWidgetPosition({ target: bottomLeft, bottom: 50, left: 50 })
     this.setWidgetPosition({ target: bottomRight, bottom: 50, right: 50 })
+  }
+
+  setup() {
+    this.gameWidth = this.game.config.width
+    this.gameHeight = this.game.config.height
+    this.gameCenterX = this.gameWidth / 2
+    this.gameCenterY = this.gameHeight / 2
+
+    this.soundTheme = this.sound.add('theme')
+    this.soundCut = this.sound.add('cut')
+    this.soundDeath = this.sound.add('death')
   }
 
   addBG() {
@@ -107,6 +113,7 @@ class PlayGame extends Phaser.Scene {
 
     const player = new Phaser.GameObjects.Sprite(this, 0, 0, 'man')
     player.setOrigin(0.5, 1)
+    player.setDepth(1)
     const x = player.width / 2
     const y = PLAYER_POSITION_Y
     player.setPosition(x, y)
@@ -166,6 +173,7 @@ class PlayGame extends Phaser.Scene {
     this.player.setFlipX(false).setPosition(x, y)
 
     this.player.play('cut')
+    this.soundCut.play()
     this.playerPosition = PLAYER_POSITION_LEFT
   }
 
@@ -175,6 +183,7 @@ class PlayGame extends Phaser.Scene {
     this.player.setFlipX(true).setPosition(x, y)
 
     this.player.play('cut')
+    this.soundCut.play()
     this.playerPosition = PLAYER_POSITION_RIGHT
   }
 
@@ -282,7 +291,7 @@ class PlayGame extends Phaser.Scene {
       (key === 'branchLeft' && this.playerPosition === PLAYER_POSITION_LEFT) ||
       (key === 'branchRight' && this.playerPosition === PLAYER_POSITION_RIGHT)
     ) {
-      console.log('death')
+      this.soundDeath.play()
     }
   }
 
