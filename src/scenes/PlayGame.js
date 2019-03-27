@@ -2,6 +2,9 @@ import Phaser from 'phaser'
 
 const TREE_TRUNK_HEIGHT = 243 // the height of trunk1 / trunk2 image
 const TREE_ROOT_POSITION = 1450
+const PLAYER_POSITION_LEFT = 'left'
+const PLAYER_POSITION_RIGHT = 'right'
+const PLAYER_POSITION_Y = 1520
 
 class PlayGame extends Phaser.Scene {
   constructor() {
@@ -24,6 +27,8 @@ class PlayGame extends Phaser.Scene {
     this.addBG()
     this.addTree()
     this.addPlayer()
+
+    this.enableControl()
 
     this.addCorners()
   }
@@ -54,38 +59,79 @@ class PlayGame extends Phaser.Scene {
   }
 
   addPlayer() {
-    const manBreathFrames = this.anims.generateFrameNames('man', {
+    const breathFrames = this.anims.generateFrameNames('man', {
       prefix: 'breath',
       start: 1,
       end: 2,
       zeroPad: 2,
     })
 
-    const manCutFrames = this.anims.generateFrameNames('man', {
+    this.anims.create({
+      key: 'breath',
+      frames: breathFrames,
+      frameRate: 3,
+      repeat: -1,
+    })
+
+    const cutFrames = this.anims.generateFrameNames('man', {
       prefix: 'cut',
       start: 1,
       end: 3,
       zeroPad: 2,
     })
 
-    this.anims.create({
-      key: 'breath',
-      frames: manBreathFrames,
-      frameRate: 3,
-      repeat: -1,
-    })
-
-    this.anims.create({
+    const cutAnimation = this.anims.create({
       key: 'cut',
-      frames: manCutFrames,
-      frameRate: 3,
-      repeat: -1,
+      frames: cutFrames,
+      frameRate: 15,
     })
 
-    this.add.sprite(400, 300, 'man').play('breath')
-    this.add.sprite(400, 700, 'man').play('cut')
+    const { ANIMATION_COMPLETE } = Phaser.Animations.Events
+    cutAnimation.on(ANIMATION_COMPLETE, () => {
+      this.player.play('breath')
+    })
 
-    this.playerPosition = 'left'
+    const player = new Phaser.GameObjects.Sprite(this, 0, 0, 'man')
+    player.setOrigin(0.5, 1)
+    const x = player.width / 2
+    const y = PLAYER_POSITION_Y
+    player.setPosition(x, y)
+    this.add.existing(player)
+
+    player.play('breath')
+
+    this.player = player
+    this.playerPosition = PLAYER_POSITION_LEFT
+  }
+
+  movePlayerToLeft() {
+    const x = this.player.width / 2
+    const y = PLAYER_POSITION_Y
+    this.player.setFlipX(false).setPosition(x, y)
+
+    this.player.play('cut')
+    this.playerPosition = PLAYER_POSITION_LEFT
+  }
+
+  movePlayerToRight() {
+    const x = this.gameWidth - this.player.width / 2
+    const y = PLAYER_POSITION_Y
+    this.player.setFlipX(true).setPosition(x, y)
+
+    this.player.play('cut')
+    this.playerPosition = PLAYER_POSITION_RIGHT
+  }
+
+  enableControl() {
+    const { SPACE, LEFT, RIGHT } = Phaser.Input.Keyboard.KeyCodes
+
+    const keySpace = this.input.keyboard.addKey(SPACE)
+    const keyLeft = this.input.keyboard.addKey(LEFT)
+    const keyRight = this.input.keyboard.addKey(RIGHT)
+
+    keySpace.on('down', () => console.log('SPACE'))
+    keyLeft.on('down', () => this.movePlayerToLeft())
+    keyRight.on('down', () => this.movePlayerToRight())
   }
 
   get randomTrunkKey() {
