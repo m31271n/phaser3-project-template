@@ -132,6 +132,14 @@ class PlayGame extends Phaser.Scene {
     keySpace.on('down', () => console.log('SPACE'))
     keyLeft.on('down', () => this.movePlayerToLeft())
     keyRight.on('down', () => this.movePlayerToRight())
+
+    this.input.on('pointerdown', ({ x }) => {
+      if (x <= this.gameWidth / 2) {
+        this.movePlayerToLeft()
+      } else {
+        this.movePlayerToRight()
+      }
+    })
   }
 
   get randomTrunkKey() {
