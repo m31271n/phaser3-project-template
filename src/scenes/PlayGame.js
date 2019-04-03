@@ -9,11 +9,13 @@ const TREE_TRUNK_GRAVITY = 2000
 const PLAYER_POSITION_LEFT = 'left'
 const PLAYER_POSITION_RIGHT = 'right'
 const PLAYER_POSITION_Y = 1520
+let GAME_OVER = false
 
 class PlayGame extends Phaser.Scene {
   constructor() {
     super('PlayGame')
 
+    this.currentScore = 0
     this.trunks = ['trunk1', 'trunk2']
     this.branches = ['branchLeft', 'branchRight']
   }
@@ -25,6 +27,7 @@ class PlayGame extends Phaser.Scene {
 
     this.addBG()
     this.addTree()
+    this.addScore()
     this.addPlayer()
 
     this.enableControl()
@@ -73,8 +76,21 @@ class PlayGame extends Phaser.Scene {
     for (let i = 0; i < 6; i++) {
       this.addBlock()
     }
+  }
 
-    this.canCut = true
+  addScore() {
+    this.score = this.add
+      .text(this.gameCenterX, 300, this.currentScore, {
+        color: '#00ff00',
+        fontSize: 60,
+      })
+      .setOrigin(0.5, 0)
+      .setDepth(1)
+  }
+
+  updateScore() {
+    this.currentScore += 1
+    this.score.setText(this.currentScore)
   }
 
   addPlayer() {
@@ -125,6 +141,8 @@ class PlayGame extends Phaser.Scene {
   }
 
   enableControl() {
+    this.canCut = true
+
     const { SPACE, LEFT, RIGHT } = Phaser.Input.Keyboard.KeyCodes
 
     const keySpace = this.input.keyboard.addKey(SPACE)
@@ -157,6 +175,7 @@ class PlayGame extends Phaser.Scene {
     this.addBlock()
     this.removeBlock()
     this.checkDeath()
+    this.updateScore()
   }
 
   cutRight() {
@@ -168,6 +187,7 @@ class PlayGame extends Phaser.Scene {
     this.addBlock()
     this.removeBlock()
     this.checkDeath()
+    this.updateScore()
   }
 
   movePlayerToLeft() {
@@ -248,6 +268,7 @@ class PlayGame extends Phaser.Scene {
 
     block.setOrigin(0.5)
     block.y -= block.height / 2
+    block.setDepth(1)
 
     block.body.setVelocityY(-TREE_TRUNK_VELOCITY_Y)
     block.body.setGravityY(TREE_TRUNK_GRAVITY)
@@ -288,6 +309,7 @@ class PlayGame extends Phaser.Scene {
       (key === 'branchRight' && this.playerPosition === PLAYER_POSITION_RIGHT)
     ) {
       this.soundDeath.play()
+      GAME_OVER = true
     }
   }
 
