@@ -14,6 +14,10 @@ module.exports = {
   resolve: {
     alias: {
       assets: path.resolve(__dirname, '../assets'),
+      phaser: path.resolve(
+        __dirname,
+        '../node_modules/phaser/dist/phaser.min.js'
+      ),
     },
   },
   module: {

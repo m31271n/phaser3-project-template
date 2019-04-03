@@ -351,10 +351,10 @@ class PlayGame extends Phaser.Scene {
       (key === 'branchLeft' && this.playerPosition === PLAYER_POSITION_LEFT) ||
       (key === 'branchRight' && this.playerPosition === PLAYER_POSITION_RIGHT)
     ) {
-      // GAME_OVER = true
-      // this.soundTheme.stop()
-      // this.soundDeath.play()
-      // this.addBtnPlay()
+      GAME_OVER = true
+      this.soundTheme.stop()
+      this.soundDeath.play()
+      this.addBtnPlay()
     }
   }
 
