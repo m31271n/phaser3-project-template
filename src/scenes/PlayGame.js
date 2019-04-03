@@ -1,5 +1,7 @@
 import Phaser from 'phaser'
 
+let GAME_OVER = false
+
 const TREE_ROOT_POSITION = 1450
 const TREE_TRUNK_HEIGHT = 243 // the height of trunk1 / trunk2 image
 const TREE_TRUNK_VELOCITY_X = 1000
@@ -9,7 +11,9 @@ const TREE_TRUNK_GRAVITY = 2000
 const PLAYER_POSITION_LEFT = 'left'
 const PLAYER_POSITION_RIGHT = 'right'
 const PLAYER_POSITION_Y = 1520
-let GAME_OVER = false
+
+const DEPTH_TOP = 1
+const DEPTH_MENU = 2
 
 class PlayGame extends Phaser.Scene {
   constructor() {
@@ -36,6 +40,7 @@ class PlayGame extends Phaser.Scene {
   }
 
   update() {
+    this.renderScore()
     const { topLeft, topRight, bottomLeft, bottomRight } = this
 
     this.setWidgetPosition({ target: topLeft, top: 50, left: 50 })
@@ -85,12 +90,35 @@ class PlayGame extends Phaser.Scene {
         fontSize: 60,
       })
       .setOrigin(0.5, 0)
-      .setDepth(1)
+      .setDepth(DEPTH_TOP)
   }
 
-  updateScore() {
-    this.currentScore += 1
+  renderScore() {
     this.score.setText(this.currentScore)
+  }
+
+  increaseScore() {
+    this.currentScore += 1
+  }
+
+  resetScore() {
+    this.currentScore = 0
+  }
+
+  addBtnPlay() {
+    const btnPlay = this.add
+      .image(this.gameCenterX, 1200, 'btn-play')
+      .setDepth(DEPTH_MENU)
+      .setInteractive()
+
+    btnPlay.on('pointerdown', () => {
+      btnPlay.y += 10
+    })
+
+    btnPlay.on('pointerup', () => {
+      btnPlay.y -= 10
+      this.restart()
+    })
   }
 
   addPlayer() {
@@ -128,7 +156,7 @@ class PlayGame extends Phaser.Scene {
 
     const player = new Phaser.GameObjects.Sprite(this, 0, 0, 'man')
     player.setOrigin(0.5, 1)
-    player.setDepth(1)
+    player.setDepth(DEPTH_TOP)
     const x = player.width / 2
     const y = PLAYER_POSITION_Y
     player.setPosition(x, y)
@@ -149,15 +177,24 @@ class PlayGame extends Phaser.Scene {
     const keyLeft = this.input.keyboard.addKey(LEFT)
     const keyRight = this.input.keyboard.addKey(RIGHT)
 
-    keySpace.on('down', () => {})
+    keySpace.on('down', () => {
+      if (!GAME_OVER) return
+      this.restart()
+    })
+
     keyLeft.on('down', () => {
+      if (GAME_OVER) return
       this.cutLeft()
     })
+
     keyRight.on('down', () => {
+      if (GAME_OVER) return
       this.cutRight()
     })
 
     this.input.on('pointerdown', ({ x }) => {
+      if (GAME_OVER) return
+
       if (x <= this.gameWidth / 2) {
         this.cutLeft()
       } else {
@@ -175,7 +212,10 @@ class PlayGame extends Phaser.Scene {
     this.addBlock()
     this.removeBlock()
     this.checkDeath()
-    this.updateScore()
+
+    if (!GAME_OVER) {
+      this.increaseScore()
+    }
   }
 
   cutRight() {
@@ -187,7 +227,10 @@ class PlayGame extends Phaser.Scene {
     this.addBlock()
     this.removeBlock()
     this.checkDeath()
-    this.updateScore()
+
+    if (!GAME_OVER) {
+      this.increaseScore()
+    }
   }
 
   movePlayerToLeft() {
@@ -268,7 +311,7 @@ class PlayGame extends Phaser.Scene {
 
     block.setOrigin(0.5)
     block.y -= block.height / 2
-    block.setDepth(1)
+    block.setDepth(DEPTH_TOP)
 
     block.body.setVelocityY(-TREE_TRUNK_VELOCITY_Y)
     block.body.setGravityY(TREE_TRUNK_GRAVITY)
@@ -292,7 +335,7 @@ class PlayGame extends Phaser.Scene {
       this.tweens.add({
         targets: block,
         y: block.y + TREE_TRUNK_HEIGHT,
-        duration: 100,
+        duration: 50,
         onComplete: () => {
           this.canCut = true
         },
@@ -308,9 +351,17 @@ class PlayGame extends Phaser.Scene {
       (key === 'branchLeft' && this.playerPosition === PLAYER_POSITION_LEFT) ||
       (key === 'branchRight' && this.playerPosition === PLAYER_POSITION_RIGHT)
     ) {
-      this.soundDeath.play()
-      GAME_OVER = true
+      // GAME_OVER = true
+      // this.soundTheme.stop()
+      // this.soundDeath.play()
+      // this.addBtnPlay()
     }
+  }
+
+  restart() {
+    GAME_OVER = false
+    this.resetScore()
+    this.scene.start('PlayGame')
   }
 
   addCorners() {

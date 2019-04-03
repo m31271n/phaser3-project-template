@@ -9,6 +9,7 @@ import _branchLeft from 'assets/sprites/branch_left.png'
 import _branchRight from 'assets/sprites/branch_right.png'
 import _man from 'assets/sprites/man.png'
 import _man_json from 'assets/sprites/man.json'
+import _btn_play from 'assets/sprites/btn-play.png'
 
 import _theme_ogg from 'assets/sounds/theme.ogg'
 import _theme_mp3 from 'assets/sounds/theme.mp3'
@@ -33,6 +34,7 @@ class BootGame extends Phaser.Scene {
     this.load.image('trunk2', _trunk2)
     this.load.image('branchLeft', _branchLeft)
     this.load.image('branchRight', _branchRight)
+    this.load.image('btn-play', _btn_play)
 
     this.load.atlas('man', _man, _man_json)
 

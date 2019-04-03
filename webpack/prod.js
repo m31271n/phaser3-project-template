@@ -6,7 +6,7 @@ const base = require('./base')
 module.exports = merge(base, {
   mode: 'production',
   output: {
-    filename: 'bundle.min.js',
+    filename: '[name].[chunkhash:8].js',
   },
   devtool: 'nosources-source-map',
   performance: {
