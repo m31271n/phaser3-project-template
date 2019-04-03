@@ -2,10 +2,9 @@ import Phaser from 'phaser'
 
 const TREE_ROOT_POSITION = 1450
 const TREE_TRUNK_HEIGHT = 243 // the height of trunk1 / trunk2 image
-const TREE_TRUNK_VELOCITY_X = 800
+const TREE_TRUNK_VELOCITY_X = 1000
 const TREE_TRUNK_VELOCITY_Y = 600
 const TREE_TRUNK_GRAVITY = 2000
-const TREE_TRUNK_ROTATE_ANGLE = 250
 
 const PLAYER_POSITION_LEFT = 'left'
 const PLAYER_POSITION_RIGHT = 'right'
@@ -48,7 +47,7 @@ class PlayGame extends Phaser.Scene {
     this.gameCenterX = this.gameWidth / 2
     this.gameCenterY = this.gameHeight / 2
 
-    this.soundTheme = this.sound.add('theme')
+    this.soundTheme = this.sound.add('theme', { loop: true })
     this.soundCut = this.sound.add('cut')
     this.soundDeath = this.sound.add('death')
   }
@@ -89,7 +88,7 @@ class PlayGame extends Phaser.Scene {
     this.anims.create({
       key: 'breath',
       frames: breathFrames,
-      frameRate: 3,
+      frameRate: 5,
       repeat: -1,
     })
 
@@ -150,6 +149,8 @@ class PlayGame extends Phaser.Scene {
   }
 
   cutLeft() {
+    if (!this.canCut) return
+
     this.movePlayerToLeft()
     this.checkDeath()
 
@@ -159,6 +160,8 @@ class PlayGame extends Phaser.Scene {
   }
 
   cutRight() {
+    if (!this.canCut) return
+
     this.movePlayerToRight()
     this.checkDeath()
 
@@ -249,36 +252,29 @@ class PlayGame extends Phaser.Scene {
     block.body.setVelocityY(-TREE_TRUNK_VELOCITY_Y)
     block.body.setGravityY(TREE_TRUNK_GRAVITY)
 
-    let angle = 0
-
     switch (this.playerPosition) {
       case PLAYER_POSITION_LEFT:
         block.body.setVelocityX(TREE_TRUNK_VELOCITY_X)
-        angle = -TREE_TRUNK_ROTATE_ANGLE
         break
 
       case PLAYER_POSITION_RIGHT:
         block.body.setVelocityX(-TREE_TRUNK_VELOCITY_X)
-        angle = TREE_TRUNK_ROTATE_ANGLE
         break
 
       default:
     }
 
-    this.tweens.add({
-      targets: block,
-      angle,
-      duration: 800,
-      ease: 'Power2',
-    })
-
     const blocks = this.tree.getChildren()
 
+    this.canCut = false
     blocks.forEach(block => {
       this.tweens.add({
         targets: block,
         y: block.y + TREE_TRUNK_HEIGHT,
         duration: 100,
+        onComplete: () => {
+          this.canCut = true
+        },
       })
     })
   }
