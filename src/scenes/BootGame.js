@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import WebFont from 'webfontloader'
 import _rect from 'assets/rect.png'
 import _logo from 'assets/logo.png'
 import _background from 'assets/sprites/background.png'
@@ -17,6 +18,8 @@ import _cut_ogg from 'assets/sounds/cut.ogg'
 import _cut_mp3 from 'assets/sounds/cut.mp3'
 import _death_ogg from 'assets/sounds/death.ogg'
 import _death_mp3 from 'assets/sounds/death.mp3'
+
+import _font from 'assets/fonts/stacked-pixel.ttf'
 
 class BootGame extends Phaser.Scene {
   constructor() {
@@ -58,7 +61,23 @@ class BootGame extends Phaser.Scene {
   }
 
   nextScene() {
-    this.scene.start('PlayGame')
+    this.loadFont('Stacked Pixel', _font, () => {
+      this.scene.start('PlayGame')
+    })
+  }
+
+  loadFont(name, url, callback) {
+    const element = document.createElement('style')
+    document.head.appendChild(element)
+    const styles = `@font-face { font-family: "${name}"; src: url("${_font}"); }\n`
+    element.sheet.insertRule(styles, 0)
+
+    WebFont.load({
+      custom: {
+        families: [name],
+      },
+      active: callback,
+    })
   }
 }
 

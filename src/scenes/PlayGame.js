@@ -86,9 +86,11 @@ class PlayGame extends Phaser.Scene {
   addScore() {
     this.score = this.add
       .text(this.gameCenterX, 300, this.currentScore, {
-        color: '#00ff00',
-        fontSize: 60,
+        fontFamily: 'Stacked Pixel',
+        color: '#ffffff',
+        fontSize: 120,
       })
+      .setStroke('#000000', 14)
       .setOrigin(0.5, 0)
       .setDepth(DEPTH_TOP)
   }

@@ -41,7 +41,7 @@ module.exports = {
         use: 'raw-loader',
       },
       {
-        test: /\.(gif|png|jpe?g|svg|xml|mp3|mp4|ogg|fnt)$/i,
+        test: /\.(gif|png|jpe?g|svg|xml|mp3|mp4|ogg|fnt|ttf)$/i,
         use: useFileLoader,
       },
       {
