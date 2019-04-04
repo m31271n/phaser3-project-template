@@ -4,6 +4,13 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
+const useFileLoader = {
+  loader: 'file-loader',
+  options: {
+    name: '[name].[hash:8].[ext]',
+  },
+}
+
 module.exports = {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
@@ -35,14 +42,14 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpe?g|svg|xml|mp3|mp4|ogg|fnt)$/i,
-        use: 'file-loader',
+        use: useFileLoader,
       },
       {
         // fix error when loading JSON files in webpack 4
         // https://github.com/webpack-contrib/file-loader/issues/264
         test: /\.json$/,
         type: 'javascript/auto',
-        use: 'file-loader',
+        use: useFileLoader,
       },
     ],
   },
