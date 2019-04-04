@@ -1,3 +1,6 @@
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
+
 import Phaser from 'phaser'
 import BootGame from './scenes/BootGame'
 import PlayGame from './scenes/PlayGame'
@@ -10,12 +13,12 @@ delete window.Phaser
 dc.disableScroll()
 
 const config = {
-  backgroundColor: 0xecf0f1,
+  backgroundColor: 0x000000,
   banner: !env.isProduction(),
   autoFocus: true,
   type: Phaser.AUTO,
   parent: 'game-container',
-  scaleMode: Phaser.Scale.FIT,
+  scaleMode: Phaser.Scale.ENVELOP,
   forceOrientation: true,
   autoCenter: Phaser.Scale.CENTER_BOTH,
   width: 1080,
