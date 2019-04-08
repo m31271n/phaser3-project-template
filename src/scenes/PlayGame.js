@@ -404,8 +404,8 @@ class PlayGame extends Phaser.Scene {
     // $ indicates that the unit is CSS pixel.
     const bounds = this.game.scale.canvasBounds
 
-    const $width = this.game.scale.displaySize.width
-    const $height = this.game.scale.displaySize.height
+    const $width = this.game.scale.scaledSize.width
+    const $height = this.game.scale.scaledSize.height
 
     let $x
     let $y
