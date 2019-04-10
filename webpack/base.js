@@ -21,10 +21,6 @@ module.exports = {
   resolve: {
     alias: {
       assets: path.resolve(__dirname, '../assets'),
-      phaser: path.resolve(
-        __dirname,
-        '../node_modules/phaser/dist/phaser.min.js'
-      ),
     },
   },
   module: {
@@ -61,7 +57,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'typeof WEBGL_RENDERER': JSON.stringify(true),
       'typeof CANVAS_RENDERER': JSON.stringify(true),
-      'typeof EXPERIMENTAL': JSON.stringify(true),
+      'typeof UNOFFICIAL_EXTENSION': JSON.stringify(true),
+      'typeof EXPERIMENTAL': JSON.stringify(false),
       'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
       'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
       'process.env.APP_ENV': JSON.stringify(process.env.APP_ENV || ''),

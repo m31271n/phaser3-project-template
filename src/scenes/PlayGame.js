@@ -43,10 +43,10 @@ class PlayGame extends Phaser.Scene {
     this.renderScore()
     const { topLeft, topRight, bottomLeft, bottomRight } = this
 
-    this.setWidgetPosition({ target: topLeft, top: 50, left: 50 })
-    this.setWidgetPosition({ target: topRight, top: 50, right: 50 })
-    this.setWidgetPosition({ target: bottomLeft, bottom: 50, left: 50 })
-    this.setWidgetPosition({ target: bottomRight, bottom: 50, right: 50 })
+    Phaser.Display.Align.Viewport.Set(topLeft, { top: 50, left: 50 })
+    Phaser.Display.Align.Viewport.Set(topRight, { top: 50, right: 50 })
+    Phaser.Display.Align.Viewport.Set(bottomLeft, { bottom: 50, left: 50 })
+    Phaser.Display.Align.Viewport.Set(bottomRight, { bottom: 50, right: 50 })
   }
 
   setup() {
@@ -398,61 +398,6 @@ class PlayGame extends Phaser.Scene {
       .on('pointerup', () => {
         console.log('BOTTOM RIGHT')
       })
-  }
-
-  setWidgetPosition({ target, top, bottom, left, right }) {
-    // $ indicates that the unit is CSS pixel.
-    const bounds = this.game.scale.canvasBounds
-
-    const $width = this.game.scale.scaledSize.width
-    const $height = this.game.scale.scaledSize.height
-
-    let $x
-    let $y
-    let $viewportWidth
-    let $viewportHeight
-
-    if (this.game.scale.shouldRotate) {
-      $x = bounds.y
-      $y = bounds.x
-      $viewportWidth = window.innerHeight
-      $viewportHeight = window.innerWidth
-    } else {
-      $x = bounds.x
-      $y = bounds.y
-      $viewportWidth = window.innerWidth
-      $viewportHeight = window.innerHeight
-    }
-
-    // No $ indicates that the unit is physical pixel.
-    const { width, height } = this.game.config
-
-    // this scale is required when converting CSS size into canvas size.
-    const { x: scaleX, y: scaleY } = this.game.scale.displayScale
-
-    // adjust $left, $top, $right, $bottom according the scale mode
-    const $properLeft = $x >= 0 ? 0 : -$x
-    const $properTop = $y >= 0 ? 0 : -$y
-
-    const $properWidth = $width > $viewportWidth ? $viewportWidth : $width
-    const $properHeight = $height > $viewportHeight ? $viewportHeight : $height
-    const $properRight = $properLeft + $properWidth
-    const $properBottom = $properTop + $properHeight
-
-    const boundLeft = $properLeft * scaleX
-    const boundTop = $properTop * scaleY
-    const boundRight = $properRight * scaleX
-    const boundBottom = $properBottom * scaleY
-
-    let x
-    let y
-
-    if (left !== undefined) x = boundLeft + left
-    if (top !== undefined) y = boundTop + top
-    if (right !== undefined) x = boundRight - right
-    if (bottom !== undefined) y = boundBottom - bottom
-
-    target.setPosition(x, y)
   }
 }
 
